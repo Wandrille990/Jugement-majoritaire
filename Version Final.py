@@ -1,30 +1,24 @@
 from operator import attrgetter
 
 try:
-    nombre_de_choix = int(input("Combien y a t'il de candidats ? : "))
-    decompte_jugement = nombre_de_choix
-
-    print("")
-
-    nombre_de_votant = int(input("Combien de personne vont voter ? : "))
-
     classement = []
     liste_des_choix = []
 
-    print("")
-    print("Entrez les noms des candidats les uns à la suite des autres.")
+    nombre_de_choix = int(input("Combien y a t'il de candidats ? : "))
+
     print("")
 
     for i in range(nombre_de_choix):
-        liste_des_choix.append(input("Nom des candidats: "))
+        liste_des_choix.append(input("Nom du candidat {} : ".format(i+1)))
 
     print("")
     print("Candidats enregistré :")
 
-    n = 0
     for i in range(nombre_de_choix):
-        print("{}".format(liste_des_choix[n]))
-        n += 1
+        print("{}".format(liste_des_choix[i]))
+
+    print("")
+    nombre_de_votant = int(input("Combien de personnes vont voter ? : "))
 
     ''' ICI COMMENCE LE JUGEMENT '''
 
@@ -48,17 +42,19 @@ try:
             self.Tres_bien = Tres_bien
             self.Exellent = Exellent
 
-    while decompte_jugement > 0:
+    for i in range(nombre_de_choix):
+
+        Nom = liste_des_choix[i]
 
         print("")
 
-        voix = Jugement(int(input("Combien de voix 'A rejeter' ? : ")),
-                        int(input("Combien de voix 'Insuffisant' ? : ")),
-                        int(input("Combien de voix 'Passable' ? : ")),
-                        int(input("Combien de voix 'Assez bien' ? : ")),
-                        int(input("Combien de voix 'Bien' ? : ")),
-                        int(input("Combien de voix 'Très bien' ? : ")),
-                        int(input("Combien de voix 'Excellent' ? : ")))
+        voix = Jugement(int(input("Combien de voix 'A rejeter' pour le candidat {} ? : ".format(liste_des_choix[i]))),
+                        int(input("Combien de voix 'Insuffisant' pour le candidat {} ? : ".format(liste_des_choix[i]))),
+                        int(input("Combien de voix 'Passable' pour le candidat {} ? : ".format(liste_des_choix[i]))),
+                        int(input("Combien de voix 'Assez bien' pour le candidat {} ? : ".format(liste_des_choix[i]))),
+                        int(input("Combien de voix 'Bien' pour le candidat {} ? : ".format(liste_des_choix[i]))),
+                        int(input("Combien de voix 'Très bien' pour le candidat {} ? : ".format(liste_des_choix[i]))),
+                        int(input("Combien de voix 'Excellent' pour le candidat {} ? : ".format(liste_des_choix[i]))))
 
         Au_moins_A_rejeter = voix.A_rejeter
         Au_moins_Insuffisant = voix.A_rejeter + voix.Insuffisant
@@ -129,11 +125,8 @@ try:
             Mention = None
             Pourcentage = None
 
-        classement.append(Candidat(liste_des_choix[0], Mention, Pourcentage))  # enregistrement des choix à classer
+        classement.append(Candidat(Nom, Mention, Pourcentage))  # enregistrement des choix à classer
 
-        del liste_des_choix[0]
-
-        decompte_jugement -= 1
 
 except ValueError:
     print("")
@@ -152,83 +145,50 @@ try:
     print("")
     vote_blanc = int(input("Combien de personne n'on pas du tout rempli leur bulletin ? : "))
 
-    n = 0
-    for i in classement:
+    titre_mention = ["A rejeter", "Insuffisant -", "Insuffisant +", "Passable -", "Passable +",
+                     "Assez bien -", "Assez bien +", "Bien -", "Bien +", "Très bien -", "Très bien +", "Exellent"]
 
-        if classement[n].Mention == 0:
-            classement[n].Mention = "A rejeter"
-        elif classement[n].Mention == 1:
-            classement[n].Mention = "Insuffisant -"
-        elif classement[n].Mention == 2:
-            classement[n].Mention = "Insuffisant +"
-        elif classement[n].Mention == 3:
-            classement[n].Mention = "Passable -"
-        elif classement[n].Mention == 4:
-            classement[n].Mention = "Passable +"
-        elif classement[n].Mention == 5:
-            classement[n].Mention = "Assez bien -"
-        elif classement[n].Mention == 6:
-            classement[n].Mention = "Assez bien +"
-        elif classement[n].Mention == 7:
-            classement[n].Mention = "Bien -"
-        elif classement[n].Mention == 8:
-            classement[n].Mention = "Bien +"
-        elif classement[n].Mention == 9:
-            classement[n].Mention = "Très bien -"
-        elif classement[n].Mention == 10:
-            classement[n].Mention = "Très bien +"
-        elif classement[n].Mention == 11:
-            classement[n].Mention = "Exellent"
-
-        n += 1
+    for i in range(len(classement)):
+        for j in range(len(titre_mention)):
+            if classement[i].Mention == j:
+                classement[i].Mention = titre_mention[j]
+                break
 
     print("")
-    print("")
-
-    if classement[0].Mention == "A rejeter" \
-            or classement[0].Mention == "Insuffisant +" \
-            or classement[0].Mention == "Passable +" \
-            or classement[0].Mention == "Assez bien +" \
-            or classement[0].Mention == "Bien +" \
-            or classement[0].Mention == "Très bien +":
-        print("")
-        print("Les candidats élus sont {} avec la mention majoritaire {}, avec {}% de mention au dessus de la mention majoritaire."
-              .format(classement[0].Nom, classement[0].Mention, classement[0].Pourcentage))
-
-    elif classement[0].Mention == "Insuffisant -" \
-            or classement[0].Mention == "Passable -" \
-            or classement[0].Mention == "Assez bien -" \
-            or classement[0].Mention == "Bien -" \
-            or classement[0].Mention == "Très bien -" \
-            or classement[0].Mention == "Exellent":
-        print("")
-        print("Les candidats élus sont {} avec la mention majoritaire {}, avec {}% de mention en dessous de la mention majoritaire."
-              .format(classement[0].Nom, classement[0].Mention, 1 - classement[0].Pourcentage))
-
     print("")
 
     n = 0
-    for i in classement:
-        if classement[n].Mention == "A rejeter" \
-                or classement[n].Mention == "Insuffisant +" \
-                or classement[n].Mention == "Passable +" \
-                or classement[n].Mention == "Assez bien +" \
-                or classement[n].Mention == "Bien +" \
-                or classement[n].Mention == "Très bien +":
+    for i in range(11):
+        if classement[0].Mention == titre_mention[n]:
             print("")
-            print("La mention majoritaire des candidats {} est {}, avec {}% de mention au dessus de la mention majoritaire."
-                  .format(classement[n].Nom, classement[n].Mention, classement[n].Pourcentage))
+            print("Les candidats élus sont {} avec la mention majoritaire {}, avec {}% de mention au dessus de la mention majoritaire."
+                  .format(classement[0].Nom, classement[0].Mention, classement[0].Pourcentage))
+            break
 
-        elif classement[n].Mention == "Insuffisant -" \
-                or classement[n].Mention == "Passable -" \
-                or classement[n].Mention == "Assez bien -" \
-                or classement[n].Mention == "Bien -" \
-                or classement[n].Mention == "Très bien -" \
-                or classement[n].Mention == "Exellent":
+        elif classement[0].Mention == titre_mention[n+1]:
             print("")
-            print("La mention majoritaire des candidats {} est {}, avec {}% de mention au dessous de la mention majoritaire."
-                  .format(classement[n].Nom, classement[n].Mention, 1 - classement[n].Pourcentage))
-        n += 1
+            print("Les candidats élus sont {} avec la mention majoritaire {}, avec {}% de mention en dessous de la mention majoritaire."
+                  .format(classement[0].Nom, classement[0].Mention, 1 - classement[0].Pourcentage))
+            break
+        n += 2
+
+    print("")
+
+    for i in range(len(classement)):
+        n = 0
+        for j in range(11):
+            if classement[i].Mention == titre_mention[n]:
+                print("")
+                print("La mention majoritaire des candidats {} est {}, avec {}% de mention au dessus de la mention majoritaire."
+                      .format(classement[i].Nom, classement[i].Mention, classement[i].Pourcentage))
+                break
+
+            elif classement[i].Mention == titre_mention[n + 1]:
+                print("")
+                print("La mention majoritaire des candidats {} est {}, avec {}% de mention au dessous de la mention majoritaire."
+                      .format(classement[i].Nom, classement[i].Mention, 1 - classement[i].Pourcentage))
+                break
+            n += 2
 
     print("")
     print("")
